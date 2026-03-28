@@ -22,9 +22,21 @@ from __future__ import print_function
 
 from ctypes import *
 import json
-from pkg_resources import resource_filename
 import platform
 import sys
+
+# Compatibility Shim for Resource Loading
+if sys.version_info >= (3, 9):
+    import importlib.resources as pkg_resources_modern
+    def get_lib_path(filename):
+        # Modern API (Python 3.9+)
+        resource = pkg_resources_modern.files(__name__).joinpath("libs", filename)
+        return str(resource)
+else:
+    import pkg_resources
+    def get_lib_path(filename):
+        # Legacy API (Python < 3.9)
+        return pkg_resources.resource_filename(__name__, "libs/" + filename)
 
 class DecsyncException(Exception):
     pass
@@ -34,24 +46,24 @@ machine_type = platform.machine()
 platform_bits = platform.architecture()[0]
 if os_name == "Linux":
     if machine_type == "x86_64":
-        libpath = resource_filename(__name__, "libs/libdecsync_amd64.so")
+        libpath = get_lib_path("libdecsync_amd64.so")
     elif machine_type.startswith("arm") or machine_type.startswith("aarch"):
         if platform_bits == "64bit":
-            libpath = resource_filename(__name__, "libs/libdecsync_arm64.so")
+            libpath = get_lib_path("libdecsync_arm64.so")
         else:
-            libpath = resource_filename(__name__, "libs/libdecsync_arm32.so")
+            libpath = get_lib_path("libdecsync_arm32.so")
     else:
         raise Exception("libdecsync: Machine type '" + machine_type + "' not supported")
 elif os_name == "Windows":
     if platform_bits == "64bit":
-        libpath = resource_filename(__name__, "libs/decsync_x64.dll")
+        libpath = get_lib_path("decsync_x64.dll")
     else:
-        libpath = resource_filename(__name__, "libs/decsync_x86.dll")
+        libpath = get_lib_path("decsync_x86.dll")
 elif os_name == "Darwin":
     if machine_type == "x86_64":
-        libpath = resource_filename(__name__, "libs/libdecsync_amd64.dylib")
+        libpath = get_lib_path("libdecsync_amd64.dylib")
     else:
-        libpath = resource_filename(__name__, "libs/libdecsync_arm64.dylib")
+        libpath = get_lib_path("libdecsync_arm64.dylib")
 else:
     raise Exception("libdecsync: Operating system '" + os_name + "' not supported")
 
