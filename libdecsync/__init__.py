@@ -20,7 +20,19 @@ along with this library; if not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
-from ctypes import *
+from ctypes import (
+    CDLL,
+    CFUNCTYPE,
+    POINTER,
+    Structure,
+    c_char_p,
+    c_void_p,
+    c_longlong,
+    c_int,
+    cast,
+    memmove,
+    py_object
+)
 import json
 import platform
 import sys
