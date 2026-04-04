@@ -26,13 +26,9 @@ from ctypes import (
     byref,
     CFUNCTYPE,
     POINTER,
-    Structure,
     c_char_p,
     c_void_p,
-    c_longlong,
     c_int,
-    cast,
-    memmove,
     py_object
 )
 import json
