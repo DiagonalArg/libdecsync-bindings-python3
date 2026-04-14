@@ -22,15 +22,13 @@ from __future__ import print_function
 
 from ctypes import (
     CDLL,
+    create_string_buffer,
+    byref,
     CFUNCTYPE,
     POINTER,
-    Structure,
     c_char_p,
     c_void_p,
-    c_longlong,
     c_int,
-    cast,
-    memmove,
     py_object
 )
 import json
